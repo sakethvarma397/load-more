@@ -11,25 +11,22 @@ export default class App extends React.Component {
     page: 0,
   };
 
-  loadUsers = () => {
-    this.setState({ loading: true });
-    const { page } = this.state;
-    axios
-      .get(`https://randomuser.me/api/?${page}&results=10`)
-      .then((response) => {
-        this.setState((prevState) => ({
-          users: [...prevState.users, ...response.data.results],
-          errorMsg: "",
-        }));
-        // { users: response.data.results, errorMsg: "" });
-        // console.log(response.data.results);
-      })
-      .catch(() => {
-        this.setState({ errorMsg: "Error while loading data" });
-      })
-      .finally(() => {
-        this.setState({ loading: false });
-      });
+  loadUsers = async () => {
+    try {
+      this.setState({ loading: true });
+      const { page } = this.state;
+      const response = await axios.get(
+        `https://randomuser.me/api/?${page}&results=10`
+      );
+      this.setState((prevState) => ({
+        users: [...prevState.users, ...response.data.results],
+        errorMsg: "",
+      }));
+    } catch {
+      this.setState({ errorMsg: "Error while loading data" });
+    } finally {
+      this.setState({ loading: false });
+    }
   };
 
   loadMore = () => {
